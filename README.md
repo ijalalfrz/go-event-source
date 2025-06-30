@@ -1,19 +1,19 @@
 # GO Clean Architecture with Event Sourcing Schema
 
-Prereuisties:
+Requirements:
 - Go v1.23.4
-- docker
-- docker compose
+- Docker
+- Docker compose
 
 
 
-# How to run
+## How to run
 - Migrate DB using commnad `make migrate-up`
 - Make environtment using command `make environment`
 - Run HTTP Server using command `make run-server`
 
 
-# Test
+## Test
 - To run all unit and integration test use command `make tests-suite`
 - To run unit test use command `make tests-unit`
 - To run integration test use command `make tests-integration`
@@ -49,10 +49,69 @@ Beside Go official packages, this project use following 3rd party packages:
 - cucumber: as automated integration test using gherkin scenario
 
 
+# Database Design
+![Account Table](docs/account.png) ![Event Table](docs/event.png)
+
+# Database Schema Overview
+
+The application uses an **Event Sourcing** pattern with two core tables:
+
+## 1. Account Table
+- **Purpose**: Real-time projection of account balances
+- **Function**: Provides fast read access to current account states
+- **Usage**: Direct queries for account information and balance checks
+
+## 2. Event Table 
+- **Purpose**: Complete audit log of all domain events
+- **Function**: Stores the full history of all changes as immutable events
+- **Key Fields**:
+  - `aggregate_id`: Unique identifier for the event aggregate (e.g., account ID)
+  - `aggregate_type`: Type of aggregate the event belongs to (e.g., `account`, `order`, `user`)
+
+## Event Sourcing Pattern
+- **Account Events**: When `aggregate_type = 'account'`, the `aggregate_id` contains the account ID
+- **Extensibility**: The same pattern supports other aggregates (e.g., `order_id` with `aggregate_type = 'order'`)
+- **Audit Trail**: Every state change is recorded as an event, enabling complete history reconstruction
+
+## Benefits
+- **Data Integrity**: Complete audit trail of all changes
+- **Temporal Queries**: Ability to reconstruct account state at any point in time
+- **Scalability**: Separate read (projection) and write (events) models
+- **Domain Evolution**: Easy to add new aggregate types without schema changes
+
 # Assumptions 
-- Event will be our source of truth timeline of balance movement we can replay event at specific time or scale app later with OLAP service using event data, there will be `init_balance`, `deposit_received`, `balance_debited`, `balance_credited` events.
-- Event also has a sequence number to capture all historical event also as a optimistic locking mechanism if there are multiple event with the same sequence number will be prevented using unique index
-- Account will store latest balance per account or source of truth balance in this OLTP service
-- `X-TRANSACTION-ID` will be used as our idempotent id to prevent double requests and stored in event table
-- `X-TIMESTAMP` is used in account cration, transfer balance API to prevent invalid request time and replay attacks
-- Signature verification: would be good to implement but in this project we don’t use it
+
+## Event Sourcing as Source of Truth
+- **Events** serve as the authoritative timeline of all balance movements
+- **Event Types**: `init_balance`, `deposit_received`, `balance_debited`, `balance_credited`
+- **Replay Capability**: Events can be replayed to reconstruct account state at any specific time
+- **Future Scalability**: Event data can be leveraged for OLAP (Online Analytical Processing) services
+
+## Event Sequencing and Concurrency Control
+- **Sequence Numbers**: Each event has a sequential number to maintain chronological order
+- **Optimistic Locking**: Unique index on sequence numbers prevents duplicate events
+- **Concurrency Safety**: Multiple events with the same sequence number are automatically rejected
+
+## Account Projection
+- **Purpose**: Stores the current/latest balance per account
+- **Performance**: Provides fast OLTP (Online Transaction Processing) read access
+- **Consistency**: Serves as the real-time source of truth for account balances
+
+## Request Security and Idempotency
+- **`X-TRANSACTION-ID`**: 
+  - Serves as idempotency key to prevent duplicate request processing
+  - Stored in event table for audit trail
+  - Ensures exactly-once semantics for critical operations
+
+- **`X-TIMESTAMP`**: 
+  - Validates request timing to prevent replay attacks
+  - Used in account creation and balance transfer APIs
+  - Ensures requests are processed within acceptable time windows
+
+## Security Considerations
+- **Signature Verification**: Recommended for production but not implemented in this project
+- **Future Enhancement**: Could be added for additional request authenticity validation
+
+
+## Sequence Diagram
+![Account Table](docs/create-account.svg) 
