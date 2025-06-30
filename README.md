@@ -1,4 +1,6 @@
 # GO Clean Architecture with Event Sourcing Schema
+Simulate transfer balance into account 
+
 
 Maintainer: Rizal Alfarizi
 
