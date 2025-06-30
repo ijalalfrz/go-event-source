@@ -114,4 +114,12 @@ The application uses an **Event Sourcing** pattern with two core tables:
 
 
 ## Sequence Diagram
-![Account Table](docs/create-account.svg) 
+### Create Account
+![Create Account](docs/create-account.svg) 
+
+### Get Account
+![Get Account](docs/get-account.svg) 
+
+
+### Transfer balance
+![Transfer](docs/create-transfer.svg) 
