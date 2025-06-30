@@ -12,6 +12,19 @@ Feature: Transfer Balance
     """
     Then the response code should be 204
 
+  Scenario: transfer balance - no x-transaction-id in header
+    Given I use default timestamp
+    And I send a POST with path "/transactions" with JSON:
+    """
+    {
+        "source_account_id": 1,
+        "destination_account_id": 2,
+        "amount": 100.00
+    }
+    """
+    Then the response code should be 400
+    Then the response error message should contain "X-TRANSACTION-ID is required in header"
+
   Scenario: transfer balance - source account not found
     Given I use default timestamp
     And I set a header key "x-transaction-id" with value "tx-4"
