@@ -7,6 +7,7 @@ on:
 jobs:
   commitlint:
     name: Commit Lint
+    runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
       - name: Checkout
@@ -29,6 +30,7 @@ jobs:
 
   validate-swagger:
     name: Validate Swagger API docs
+    runs-on: ubun
     steps:
       - name: Check Out Code
         uses: actions/checkout@v4
@@ -40,6 +42,7 @@ jobs:
 
   lint-and-unit-test:
     name: lint-and-unit-test
+    runs-on: ubun
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -73,6 +76,7 @@ jobs:
 
   integration-test:
     timeout-minutes: 10
+    runs-on: ubun
     needs: lint-and-unit-test
     steps:
       - name: Checkout
