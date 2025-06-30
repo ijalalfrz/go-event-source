@@ -1,0 +1,6 @@
+errors:
+  invalid_type: 'Invalid type encountered!'
+  record_not_found: '{{.name}} record not found!'
+  record_not_unique: '{{.name}} record not unique'
+  invalid_id: 'Invalid ID'
+  request_validation: 'Invalid Request'

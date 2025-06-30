@@ -1,0 +1,254 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "balance transfer simulation with event sourcing database schema",
+        "title": "Go Event Source API",
+        "contact": {},
+        "license": {
+            "name": "Ijal Alfarizi",
+            "url": "https://techwithrizal.com"
+        },
+        "version": "1.0.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/accounts": {
+            "post": {
+                "description": "Create an Account",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Account"
+                ],
+                "summary": "Create Account",
+                "operationId": "createAccount",
+                "parameters": [
+                    {
+                        "description": "Account",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_ijalalfrz_go-event-source_internal_app_dto.CreateAccountRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Request timestamp",
+                        "name": "x-timestamp",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Transaction ID",
+                        "name": "x-transaction-id",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "No content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_ijalalfrz_go-event-source_internal_app_dto.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Record not found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_ijalalfrz_go-event-source_internal_app_dto.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_ijalalfrz_go-event-source_internal_app_dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_ijalalfrz_go-event-source_internal_app_dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{id}": {
+            "get": {
+                "description": "Get an Account by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Account"
+                ],
+                "summary": "Get Account",
+                "operationId": "getAccount",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Account",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_ijalalfrz_go-event-source_internal_app_dto.AccountResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_ijalalfrz_go-event-source_internal_app_dto.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Record not found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_ijalalfrz_go-event-source_internal_app_dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_ijalalfrz_go-event-source_internal_app_dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/transfers": {
+            "post": {
+                "description": "Transfer between two accounts",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transfer"
+                ],
+                "summary": "Transfer",
+                "operationId": "transfer",
+                "parameters": [
+                    {
+                        "description": "Transfer",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_ijalalfrz_go-event-source_internal_app_dto.CreateTransferRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Request timestamp",
+                        "name": "x-timestamp",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Transaction ID",
+                        "name": "x-transaction-id",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "No content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_ijalalfrz_go-event-source_internal_app_dto.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Record not found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_ijalalfrz_go-event-source_internal_app_dto.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_ijalalfrz_go-event-source_internal_app_dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_ijalalfrz_go-event-source_internal_app_dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "github_com_ijalalfrz_go-event-source_internal_app_dto.AccountResponse": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "integer"
+                },
+                "balance": {
+                    "type": "number"
+                }
+            }
+        },
+        "github_com_ijalalfrz_go-event-source_internal_app_dto.CreateAccountRequest": {
+            "type": "object",
+            "required": [
+                "account_id",
+                "initial_balance"
+            ],
+            "properties": {
+                "account_id": {
+                    "type": "integer"
+                },
+                "initial_balance": {
+                    "type": "number"
+                }
+            }
+        },
+        "github_com_ijalalfrz_go-event-source_internal_app_dto.CreateTransferRequest": {
+            "type": "object",
+            "required": [
+                "amount",
+                "destination_account_id",
+                "source_account_id"
+            ],
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "destination_account_id": {
+                    "type": "integer"
+                },
+                "source_account_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "github_com_ijalalfrz_go-event-source_internal_app_dto.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
