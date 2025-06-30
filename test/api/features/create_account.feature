@@ -10,7 +10,20 @@ Feature: Create Account
     }
     """
     Then the response code should be 201
-    
+
+  Scenario: create account - no x-transaction-id
+    Given I use default timestamp
+    And I send a POST with path "/accounts" with JSON:
+    """
+    {
+        "account_id":20,
+        "initial_balance":10
+    }
+    """
+    Then the response code should be 400
+    Then the response error message should contain "X-TRANSACTION-ID is required in header"
+
+
   Scenario: create account - already exists
     Given I use default timestamp
     And I set a header key "x-transaction-id" with value "123"

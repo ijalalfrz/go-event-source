@@ -1,5 +1,7 @@
 # GO Clean Architecture with Event Sourcing Schema
 
+Maintainer: Rizal Alfarizi
+
 Requirements:
 - Go v1.23.4
 - Docker

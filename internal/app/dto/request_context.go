@@ -27,7 +27,13 @@ func RequestWithContext(req *http.Request) (*http.Request, error) {
 
 	reqContext.Language = getLanguage(req)
 	reqContext.Signature = getSignature(req)
-	reqContext.TransactionID = getTransactionID(req)
+
+	transactionID, err := getTransactionID(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get X-TRANSACTION-ID in header: %w", err)
+	}
+
+	reqContext.TransactionID = transactionID
 
 	timestamp, err := getTimestamp(req)
 	if err != nil {
@@ -76,6 +82,18 @@ func getTimestamp(req *http.Request) (time.Time, error) {
 	return timestamp, nil
 }
 
-func getTransactionID(req *http.Request) string {
-	return req.Header.Get("X-Transaction-Id")
+func getTransactionID(req *http.Request) (string, error) {
+	transactionID := req.Header.Get("X-Transaction-Id")
+	if transactionID == "" {
+		err := exception.ApplicationError{
+			Localizable: lang.Localizable{
+				Message: "X-TRANSACTION-ID is required in header",
+			},
+			StatusCode: http.StatusBadRequest,
+		}
+
+		return "", err
+	}
+
+	return transactionID, nil
 }
