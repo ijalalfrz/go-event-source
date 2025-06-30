@@ -36,7 +36,7 @@ func NewTransactionService(accountRepository AccountRepository,
 // @Tags         Transfer
 // @ID           transfer
 // @Produce      json
-// @Param        body	body		dto.CreateTransferRequest	true	"Transfer"
+// @Param        req body create transfer	body		dto.CreateTransferRequest	true	"Transfer"
 // @Param        x-timestamp	header		string	true	"Request timestamp"
 // @Param        x-transaction-id	header		string	true	"Transaction ID"
 // @Success      204  "No content"

@@ -27,7 +27,7 @@
                 "parameters": [
                     {
                         "description": "Account",
-                        "name": "body",
+                        "name": "account",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -51,7 +51,7 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "No content"
+                        "description": "Created"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -142,7 +142,7 @@
                 "parameters": [
                     {
                         "description": "Transfer",
-                        "name": "body",
+                        "name": "transfer",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -165,7 +165,7 @@
                     }
                 ],
                 "responses": {
-                    "201": {
+                    "204": {
                         "description": "No content"
                     },
                     "400": {

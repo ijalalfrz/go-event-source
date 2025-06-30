@@ -1,0 +1,94 @@
+name: Checks
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  commitlint:
+    name: Commit Lint
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: '**/.github/workflows/*.yml'
+      - name: Commit Lint
+        run: |
+          FIRST_COMMIT_SHA=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" ${{ github.event.pull_request.commits_url }} | jq -r '.[0].sha')
+          npm install -g @commitlint/cli @commitlint/config-conventional
+          commitlint --from $FIRST_COMMIT_SHA^
+
+  validate-swagger:
+    name: Validate Swagger API docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Code
+        uses: actions/checkout@v4
+
+      - name: Run validating
+        uses: mpetrunic/swagger-cli-action@v1.0.0
+        with:
+          command: "validate docs/swagger.json"
+
+  lint-and-unit-test:
+    name: lint-and-unit-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.21
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v4
+        with:
+          version: v1.60.3
+          args: --out-format checkstyle:lint-report.xml,github-actions --timeout 5m
+      - name: Run unit tests
+        run: RUN_IN_DOCKER='' make tests-unit
+      - name: Set env
+        run: echo "ARTIFACT_NAME=$(echo $GITHUB_REF | tr '/' '-')" >> $GITHUB_ENV
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ env.ARTIFACT_NAME }}-unit
+          path: |
+            test/coverage-unit
+            lint-report.xml
+          retention-days: 1
+          overwrite: true
+
+  integration-test:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    needs: lint-and-unit-test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Prepare
+        run: WITH_TTY='' make prepare-ci
+      - name: Run tests
+        run: WITH_TTY='' make tests-integration
+      - name: Set env
+        run: echo "ARTIFACT_NAME=$(echo $GITHUB_REF | tr '/' '-')" >> $GITHUB_ENV
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ env.ARTIFACT_NAME }}-int
+          path: test/coverage
+          retention-days: 1
+          overwrite: true
+      - name: Stop containers
+        if: always()
+        run: make docker-clean
