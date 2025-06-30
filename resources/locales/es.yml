@@ -1,5 +1,13 @@
 errors:
   invalid_type: 'Tipo inválido encontrado!'
   record_not_found: 'Registro de {{.name}} no encontrado!'
+  record_not_unique: 'Registro de {{.name}} no único'
   invalid_id: 'ID inválido'
   request_validation: 'Solicitud inválida'
+  source_account_not_found: 'cuenta de origen no encontrada'
+  destination_account_not_found: 'cuenta de destino no encontrada'
+  insufficient_balance: 'saldo insuficiente'
+  invalid_request_time: 'tiempo de solicitud inválido'
+  idempotency: 'transaction id ya utilizado por otra operación'
+  source_and_destination_account_same: 'cuenta de origen y destino no pueden ser la misma'
+  account_already_exists: 'cuenta ya existe'

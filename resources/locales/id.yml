@@ -1,6 +1,13 @@
 errors:
   invalid_type: 'Tipe tidak valid!'
   record_not_found: 'Data {{.name}} tidak ditemukan!'
+  record_not_unique: 'Data {{.name}} tidak unik'
   invalid_id: 'ID tidak valid'
   request_validation: 'Permintaan tidak valid'
-
+  source_account_not_found: 'akun sumber tidak ditemukan'
+  destination_account_not_found: 'akun tujuan tidak ditemukan'
+  insufficient_balance: 'saldo tidak cukup'
+  invalid_request_time: 'waktu permintaan tidak valid'
+  idempotency: 'transaksi id sudah digunakan oleh operasi lain'
+  source_and_destination_account_same: 'akun sumber dan tujuan tidak boleh sama'
+  account_already_exists: 'akun sudah ada'
