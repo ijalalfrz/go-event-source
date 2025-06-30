@@ -1,0 +1,39 @@
+- id: 1
+  aggregate_id: 1
+  aggregate_type: "account"
+  transaction_id: "tx-1"
+  sequence_number: 1
+  event_type: "balance_debited"
+  event_data: "{\"destination_account_id\":2,\"amount\":\"100.00\"}"
+  version: "1.0"
+  created_at: "2023-12-09 21:55:49.219"
+
+- id: 2
+  aggregate_id: 2
+  aggregate_type: "account"
+  transaction_id: "tx-1"
+  sequence_number: 1
+  event_type: "balance_credited"
+  event_data: "{\"source_account_id\":1,\"amount\":\"100.00\"}"
+  version: "1.0"
+  created_at: "2023-12-09 21:55:49.219"
+
+- id: 3
+  aggregate_id: 1
+  aggregate_type: "account"
+  transaction_id: "tx-2"
+  sequence_number: 2
+  event_type: "balance_debited"
+  event_data: "{\"destination_account_id\":3,\"amount\":\"50.00\"}"
+  version: "1.0"
+  created_at: "2023-12-09 21:55:49.219"
+
+- id: 4
+  aggregate_id: 3
+  aggregate_type: "account"
+  transaction_id: "tx-2"
+  sequence_number: 1
+  event_type: "balance_credited"
+  event_data: "{\"source_account_id\":1,\"amount\":\"50.00\"}"
+  version: "1.0"
+  created_at: "2023-12-09 21:55:49.219"
