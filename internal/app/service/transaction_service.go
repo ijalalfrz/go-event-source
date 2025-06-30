@@ -46,7 +46,6 @@ func NewTransactionService(accountRepository AccountRepository,
 // @Failure      500  {object}  dto.ErrorResponse	"Internal Server Error"
 // @Router       /transfers [post].
 func (s *TransactionService) Transfer(ctx context.Context, req dto.CreateTransferRequest) error {
-	// get request context for transaction id and timestamp
 	reqContext, err := getRequestContext(ctx, s.requestTimeThreshold)
 	if err != nil {
 		return fmt.Errorf("failed to get request context: %w", err)
