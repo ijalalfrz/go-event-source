@@ -1,0 +1,58 @@
+version: '3.1'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile-builder
+    ports:
+      - "8080:3001"
+      - "8081:3002"
+    volumes:
+      - .:/app
+    working_dir: /app
+    tty: true
+    depends_on:
+      - postgres
+    restart: always
+
+  migrate:
+    image: migrate/migrate:v4.15.2
+    volumes:
+      - ./db/migrations:/migrations
+    entrypoint: ["migrate", "-path", "/migrations", "-database",  "postgres://postgres@postgres:5432/transaction_${APP_ENV:-development}?sslmode=disable&search_path=public"]
+    command: ["up"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:14.5-alpine3.16
+    volumes:
+      - "./postgres-data:/var/lib/postgresql/data"
+      - "./db/initdb.d/:/docker-entrypoint-initdb.d/"
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_USER: postgres
+      POSTGRES_DB: transaction_development
+    ports:
+      - "5435:5432"
+    stop_signal: SIGKILL
+    healthcheck:
+      test: pg_isready
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  swagger:
+    image: expend/swagger-ui
+    ports:
+      - "8003:8080"
+    volumes:
+      - ./docs:/docs
+    environment:
+      - SWAGGER_JSON=/docs/swagger.json
+      - BASE_URL=/swagger
+
+volumes:
+  postgres-data:

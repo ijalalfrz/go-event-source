@@ -1,0 +1,66 @@
+# for additional config, check https://golangci-lint.run/usage/configuration/
+run:
+  deadline: 5m
+  skip-dirs:
+    - vendor
+    - test
+  modules-download-mode: vendor
+
+linters:
+  enable-all: true
+  disable:
+    - golint            # deprecated and replaced by revive
+    - scopelint         # deprecated and replaced by exportloopref
+    - interfacer        # opinionated and prone to errors
+    - maligned          # deprecated and replaced by govet fieldalignment
+    - prealloc          # intended only for very specific performance needs
+    - exhaustivestruct  # intended for special cases only
+    - exhaustruct       # intended for special cases only
+    - goerr113          # opinionated as it always requires creating and wrapping error sentinels
+    - gochecknoglobals  # GO doesn't support const structs or maps, so they have to be declared as vars
+    - testpackage       # we put test and code in the same package to allow testing unexported functions/structs
+    - structcheck       # deprecated and replaced by unused
+    - deadcode          # deprecated and replaced by unused
+    - nosnakecase       # deprecated and replaced by revive
+    - varcheck          # deprecated and replaced by unused
+    - ifshort           # deprecated and no replacement so far
+    - rowserrcheck      # disabled because of generics
+    - sqlclosecheck     # disabled because of generics
+    - wastedassign      # disabled because of generics
+    - depguard          # too many false positives
+
+issues:
+  max-same-issues: 0        #unlimited
+  max-issues-per-linter: 0  #unlimited
+
+linters-settings:
+  cyclop:
+    max-complexity: 12
+  dupl:
+    # Tokens count to trigger issue, 150 by default
+    threshold: 250
+  errorlint:
+    # Check whether fmt.Errorf uses the %w verb for formatting errors. See the readme for caveats
+    errorf: false
+    # Check for plain type assertions and type switches
+    asserts: true
+    # Check for plain error comparisons
+    comparison: true
+  tagliatelle:
+    case:
+      use-field-name: true
+      rules:
+        # any struct tag type can be used.
+        # support string case: `camel`, `pascal`, `kebab`, `snake`, `goCamel`, `goPascal`, `goKebab`, `goSnake`, `upper`, `lower`
+        json: snake
+        yaml: camel
+        xml: camel
+        bson: camel
+        avro: snake
+        mapstructure: snake
+  gomoddirectives:
+    replace-allow-list:
+      - github.com/dgrijalva/jwt-go
+  godox:
+    keywords:
+      - FIXME

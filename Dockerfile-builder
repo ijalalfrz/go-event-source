@@ -1,0 +1,13 @@
+# This docker file is used for development purposes only.
+FROM golang:1.23.4-alpine3.19 AS builder
+
+RUN apk --update add curl
+
+RUN wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | \
+    sh -s -- -b $(go env GOPATH)/bin v1.60.3
+
+ENV GO111MODULE=on \
+    GOOS=linux \
+    CGO_ENABLED=0
+
+EXPOSE 3001 3002

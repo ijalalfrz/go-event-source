@@ -1,0 +1,37 @@
+bin/*
+!bin/.keep
+
+# Created by https://www.gitignore.io/api/go
+# Edit at https://www.gitignore.io/?templates=go
+
+### Go ###
+# Binaries for programs and plugins
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+test/coverage/*
+test/coverage-unit/*
+!test/coverage/.keep
+!test/coverage-unit/.keep
+
+# Local config files
+.env
+
+# IDE files
+.vscode
+.idea
+
+# Secrets
+*.pem
+
+# Other
+postgres-data
+.DS_Store
+__debug_bin
+
+# End of https://www.gitignore.io/api/go
