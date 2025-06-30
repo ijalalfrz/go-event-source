@@ -61,11 +61,13 @@ func NewAccountService(accountRepository AccountRepository,
 // @Failure      500  {object}  dto.ErrorResponse	"Internal Server Error"
 // @Router       /accounts [post].
 func (s *AccountService) CreateAccount(ctx context.Context, req dto.CreateAccountRequest) error {
+	// get request context for transaction id and timestamp
 	reqContext, err := getRequestContext(ctx, s.requestTimeThreshold)
 	if err != nil {
 		return fmt.Errorf("failed to get request context: %w", err)
 	}
 
+	// check if account already exists
 	_, err = s.accountRepository.FindByID(ctx, req.AccountID)
 	if err != nil && !errors.Is(err, exception.ErrRecordNotFound) {
 		return fmt.Errorf("failed to find account: %w", err)
