@@ -50,15 +50,10 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: 1.21
-      - name: Setup cmake
-        uses: jwlawson/actions-setup-cmake@v2
-        with:
-          cmake-version: '3.24'
-      - run: touch test/api/config/access_token_private.pem access_token_public.pem
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v4
         with:
-          version: v1.56.2
+          version: v1.60.3
           args: --out-format checkstyle:lint-report.xml,github-actions --timeout 5m
       - name: Run unit tests
         run: RUN_IN_DOCKER='' make tests-unit
