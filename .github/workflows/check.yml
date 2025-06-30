@@ -76,11 +76,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup cmake
-        uses: jwlawson/actions-setup-cmake@v2
-        with:
-          cmake-version: '3.24'
-      - run: make keys
       - name: Prepare
         run: WITH_TTY='' make prepare-ci
       - name: Run tests
